@@ -2,18 +2,22 @@
 require_once "Task.php";
 require_once "config.php";
 
-if (!isset($_GET['id'])) {
+if (!isset($_GET['id'])) 
     die("Не передан id задачи");
-}
+
 
 $taskObj = new Task($pdo);
 $task = $taskObj->getById($_GET['id']);
 $urgencies = $taskObj->getUrgencies();
 
-if (!$task) {
+if (!$task) 
     die("Задача не найдена");
-}
+
 ?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -36,11 +40,13 @@ if (!$task) {
         <p>
             <label for="urgencyId">Срочность:</label><br>
             <select name="urgencyId" id="urgencyId" required>
+                
                 <?php foreach ($urgencies as $u): ?>
                     <option value="<?= $u['id'] ?>" <?= ($u['id'] == $task['urgencyId']) ? 'selected' : '' ?>>
                         <?= htmlspecialchars($u['name']) ?>
                     </option>
                 <?php endforeach; ?>
+
             </select>
         </p>
         <p>

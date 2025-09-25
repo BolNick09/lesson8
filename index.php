@@ -15,29 +15,35 @@ $tasks = $taskObj->getAll();
 <body>
     <h1>Список задач</h1>
     <a href="form.php">Добавить задачу</a>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <tr>
-            <th>ID</th>
-            <th>Название</th>
-            <th>Дата</th>
-            <th>Срочность</th>
-            <th>Действия</th>
-        </tr>
+    
+    <div class="tasks-grid">
+
+        <div class="grid-header">ID</div>
+        <div class="grid-header">Название</div>
+        <div class="grid-header">Дата</div>
+        <div class="grid-header">Срочность</div>
+        <div class="grid-header">Просмотр</div>
+        <div class="grid-header">Редактировать</div>
+        <div class="grid-header">Удалить</div>        
+
         <?php foreach ($tasks as $t): ?>
-            <tr>
-                <td><?= htmlspecialchars($t['id']) ?></td>
-                <td><?= htmlspecialchars($t['name']) ?></td>
-                <td><?= htmlspecialchars($t['due']) ?></td>
-                <td class="<?= htmlspecialchars($t['urgencyColor']) ?>">
-                    <?= htmlspecialchars($t['urgencyName']) ?>
-                </td>
-                <td>
-                    <a href="showTask.php?id=<?= $t['id'] ?>">Просмотр</a> |
-                    <a href="edit.php?id=<?= $t['id'] ?>">Редактировать</a> |
-                    <a href="delete.php?id=<?= $t['id'] ?>" onclick="return confirm('Удалить задачу?')">Удалить</a>
-                </td>
-            </tr>
+            <div class="grid-item"><?= htmlspecialchars($t['id']) ?></div>
+            <div class="grid-item"><?= htmlspecialchars($t['name']) ?></div>
+            <div class="grid-item"><?= htmlspecialchars($t['due']) ?></div>
+            <div class="grid-item <?= htmlspecialchars($t['urgencyColor']) ?>">
+                <?= htmlspecialchars($t['urgencyName']) ?>
+            </div>
+            <div class="grid-item actions-cell">
+                <a href="showTask.php?id=<?= $t['id'] ?>" class="action-link">Просмотр</a>
+            </div>
+            <div class="grid-item actions-cell">
+                <a href="edit.php?id=<?= $t['id'] ?>" class="action-link">Редактировать</a>
+            </div>
+            <div class="grid-item actions-cell">
+                <a href="delete.php?id=<?= $t['id'] ?>" class="action-link" onclick="return confirm('Удалить задачу?')">Удалить</a>
+            </div>
         <?php endforeach; ?>
-    </table>
+        
+    </div>
 </body>
 </html>

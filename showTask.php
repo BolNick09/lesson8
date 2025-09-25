@@ -2,18 +2,21 @@
 require_once "Task.php";
 require_once "config.php";
 
-if (!isset($_GET['id'])) {
+if (!isset($_GET['id'])) 
     die("Не передан id задачи");
-}
+
 
 $taskObj = new Task($pdo);
 $task = $taskObj->getById($_GET['id']);
 
 if (!$task) 
-{
     die("Задача не найдена");
-}
+
 ?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
