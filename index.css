@@ -1,59 +1,59 @@
-.grid {
-    display: grid;
-    grid-template-columns: auto auto auto auto auto auto;
-    gap: 10px;
-    margin: 20px 0;
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
 }
 
-.grid div {
-    padding: 8px;
-    border: 1px solid #ddd;
-}
-
-h1, h2 {
-    color: #333;
-}
-
-form {
-    max-width: 600px;
-    margin: 20px 0;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-form div {
+h1 {
     margin-bottom: 15px;
 }
 
-input[type="text"],
-input[type="date"],
-input[type="number"],
-textarea {
+table {
+    border-collapse: collapse;
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    background-color: #fff;
 }
 
-input[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-input[type="submit"]:hover {
-    background-color: #45a049;
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
 }
 
 a {
-    color: #0066cc;
     text-decoration: none;
+    color: #007bff;
 }
 
 a:hover {
     text-decoration: underline;
+}
+
+button {
+    padding: 6px 12px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Стили срочности */
+.high {
+    color: red;
+    font-weight: bold;
+}
+
+.medium {
+    color: orange;
+    font-weight: bold;
+}
+
+.low {
+    color: green;
+    font-weight: bold;
 }

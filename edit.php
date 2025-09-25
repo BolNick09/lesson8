@@ -1,54 +1,52 @@
 <?php
-require_once 'Task.php';
-require_once 'form.php';
+require_once "Task.php";
+require_once "config.php";
 
-if (!isset($_GET['taskId'])) 
-{
-    header('Location: index.php');//Перенаправление на указанную страницу
-    exit;
+if (!isset($_GET['id'])) {
+    die("Не передан id задачи");
 }
 
-try 
-{
-    $id = $_GET['taskId'];
-    if (!preg_match('/^\d+$/', $id)) {
-        throw new Exception("taskId должен быть числом");
-    }
+$taskObj = new Task($pdo);
+$task = $taskObj->getById($_GET['id']);
+$urgencies = $taskObj->getUrgencies();
 
-    $pdo = new PDO('mysql:host=localhost;dbname=pv311_schema;charset=utf8mb4', 'root', '', 
-    [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-
-    $query = $pdo->prepare('SELECT * FROM tasks WHERE id = :id');
-    $query->execute(['id' => $id]);
-    $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Task');
-    $task = $query->fetch();
-
-    if ($task === false) 
-        throw new Exception('Задача с таким id не найдена');
-    
-
-} 
-catch (Exception $e) 
-{
-    die('Ошибка: ' . $e->getMessage());
+if (!$task) {
+    die("Задача не найдена");
 }
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Редактирование задачи</title>
+    <title>Редактировать задачу</title>
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <h1>Редактирование задачи</h1>
-    <?php showForm($task, isNew: false); ?>
-    <a href="index.php">Назад к списку задач</a>
+    <h1>Редактировать задачу</h1>
+    <form action="update.php" method="post">
+        <input type="hidden" name="id" value="<?= $task['id'] ?>">
+        <p>
+            <label for="name">Название:</label><br>
+            <input type="text" name="name" id="name" value="<?= htmlspecialchars($task['name']) ?>" required>
+        </p>
+        <p>
+            <label for="due">Дата:</label><br>
+            <input type="date" name="due" id="due" value="<?= htmlspecialchars($task['due']) ?>" required>
+        </p>
+        <p>
+            <label for="urgencyId">Срочность:</label><br>
+            <select name="urgencyId" id="urgencyId" required>
+                <?php foreach ($urgencies as $u): ?>
+                    <option value="<?= $u['id'] ?>" <?= ($u['id'] == $task['urgencyId']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($u['name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </p>
+        <p>
+            <button type="submit">Сохранить</button>
+        </p>
+    </form>
+    <p><a href="index.php">Назад к списку</a></p>
 </body>
 </html>
-!

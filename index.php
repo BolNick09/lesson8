@@ -1,46 +1,43 @@
+<?php
+require_once "Task.php";
+require_once "config.php";
+
+$taskObj = new Task($pdo);
+$tasks = $taskObj->getAll();
+?>
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link rel="stylesheet" href="index.css">
-    </head>
-    <body>
-        <h1>Все задачи</h1>
-        <?php
-            require_once 'Task.php';
-
-
-            $pdo = new PDO('mysql:host=localhost;dbname=pv311_schema;charset=utf8mb4', 'root', '',[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,
-                                                                                                   PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
-
-        $query = $pdo->query('select * from tasks');
-        $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Task'); //Task::class = 'Task'
-
-        $tasks = $query->fetchAll();
-
-        echo '<div class="grid">';
-
-        // while ($task = $query->fetch(/*PDO::FETCH_OBJ*/))
-        foreach ($tasks as $task)
-        {
-            // var_dump($task);
-            echo "<div><a href =\"showTask.php?taskId={$task->id}\">{$task->name}</a></div>";
-            echo "<div>{$task->due}</div>";
-            echo "<div>{$task->priority}</div>";
-            echo "<div>{$task->description}</div>";
-            echo "<div><a href =\"edit.php?taskId={$task->id}\">Редактировать</a></div>";
-            echo "<div><a href =\"delete.php?taskId={$task->id}\" onClick = \"return confirm('Точно удалить?');\">Удалить</a></div>";
-        }
-        echo '</div>';
-        ?>
-        <h2>Добавить задачу</h2>
-        <?php
-            require_once 'form.php';
-            $newTask = new Task();
-            showForm($newTask, isNew: true);
-        ?>
-
-    </body>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список задач</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h1>Список задач</h1>
+    <a href="form.php">Добавить задачу</a>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Дата</th>
+            <th>Срочность</th>
+            <th>Действия</th>
+        </tr>
+        <?php foreach ($tasks as $t): ?>
+            <tr>
+                <td><?= htmlspecialchars($t['id']) ?></td>
+                <td><?= htmlspecialchars($t['name']) ?></td>
+                <td><?= htmlspecialchars($t['due']) ?></td>
+                <td class="<?= htmlspecialchars($t['urgencyColor']) ?>">
+                    <?= htmlspecialchars($t['urgencyName']) ?>
+                </td>
+                <td>
+                    <a href="showTask.php?id=<?= $t['id'] ?>">Просмотр</a> |
+                    <a href="edit.php?id=<?= $t['id'] ?>">Редактировать</a> |
+                    <a href="delete.php?id=<?= $t['id'] ?>" onclick="return confirm('Удалить задачу?')">Удалить</a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+</body>
 </html>

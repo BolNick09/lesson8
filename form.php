@@ -1,32 +1,42 @@
 <?php
-//Форма редактирования/добавления
-require_once "./Task.php";
+require_once "Task.php";
+require_once "config.php";
 
-
-
-function showForm (Task $task, bool $isNew)
-{
-    echo '<form action="' . ($isNew ? 'insert.php' : 'update.php') . '"method = "post">';
-
-        if (!$isNew)
-        {
-            echo '<div>Id:</div>';
-            echo '<input type = "hidden" name = "id" value = "' . $task->id . '" />';
-        }
-
-        echo '<div>Название:</div>';
-        echo '<input type = "text" name = "name" value = "' . htmlentities($task->name ?? ''). '" />';
-
-        echo '<div>Срок:</div>';
-        echo '<input type = "date" name = "due" value = "' . htmlentities($task->due ?? ''). '" />';
-
-        echo '<div>Приоритет:</div>';
-        echo '<input type = "number" min="1" max="5" name = "priority" value = "' . ($task->priority ?? 0) . '" />';
-
-        echo '<div>Описание:</div>';
-        echo '<textarea name = "description" rows="5" cols = "60">' . htmlentities($task->description ?? ''). '</textarea>'; 
-
-        echo '<div><input type = "submit" value = "' . ($isNew ? 'Создать' : 'Сохранить') . '" /></div>';
-
-    echo '</form>';
-}
+$taskObj = new Task($pdo);
+$urgencies = $taskObj->getUrgencies();
+?>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить задачу</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h1>Добавить задачу</h1>
+    <form action="insert.php" method="post">
+        <p>
+            <label for="title">Название:</label><br>
+            <input type="text" name="title" id="title" required>
+        </p>
+        <p>
+            <label for="dueDate">Дата:</label><br>
+            <input type="date" name="dueDate" id="dueDate" required>
+        </p>
+        <p>
+            <label for="urgencyId">Срочность:</label><br>
+            <select name="urgencyId" id="urgencyId" required>
+                <?php foreach ($urgencies as $u): ?>
+                    <option value="<?= $u['id'] ?>">
+                        <?= htmlspecialchars($u['name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </p>
+        <p>
+            <button type="submit">Добавить</button>
+        </p>
+    </form>
+    <p><a href="index.php">Назад к списку</a></p>
+</body>
+</html>

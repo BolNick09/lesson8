@@ -1,37 +1,38 @@
 <?php
-require_once "./Task.php";
+require_once "Task.php";
+require_once "config.php";
 
-if (!isset($_GET['taskId']))
-    throw new Exception('Требуется id');
-//TODO проверить taskId на int
-$id = $_GET['taskId'];
-if (!preg_match('/^\d+$/', $id))
-    throw new Exception("taskId должен быть числом");
+if (!isset($_GET['id'])) {
+    die("Не передан id задачи");
+}
 
-$pdo = new PDO('mysql:host=localhost;dbname=pv311_schema;charset=utf8mb4', 'root', '',[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,
-                                                                                                   PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
+$taskObj = new Task($pdo);
+$task = $taskObj->getById($_GET['id']);
 
-
-$query = $pdo->prepare('select * from tasks where id = :id');
-$query->execute(['id' => $id]);
-$query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Task');
-$task = $query->fetch();
-
-if ($task === false)
-    throw new Exception('Задача с таким id не найдена');
-
+if (!$task) 
+{
+    die("Задача не найдена");
+}
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><?= htmlentities($task->name) ?></title>
-    </head>
-    <body>
-        <h1><?= htmlentities($task->name) ?></h1>
-        <p><?= htmlentities($task->description) ?></p>
-        <a href="edit.php?taskId=<?= $task->id ?>">Редактировать</a>
-    </body>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Просмотр задачи</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h1>Задача #<?= htmlspecialchars($task['id']) ?></h1>
+    <p><strong>Название:</strong> <?= htmlspecialchars($task['name']) ?></p>
+    <p><strong>Дата:</strong> <?= htmlspecialchars($task['due']) ?></p>
+    <p><strong>Срочность:</strong>
+        <span class="<?= htmlspecialchars($task['urgencyColor']) ?>">
+            <?= htmlspecialchars($task['urgencyName']) ?>
+        </span>
+    </p>
+    <p>
+        <a href="edit.php?id=<?= $task['id'] ?>">Редактировать</a> |
+        <a href="index.php">Назад к списку</a>
+    </p>
+</body>
 </html>
